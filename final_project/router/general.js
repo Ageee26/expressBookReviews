@@ -19,18 +19,32 @@ public_users.post("/register", (req,res) => {
     return res.status(404).json({message: "Unable to register user."});
 });
 
-// Get the book list available in the shop
+// Get the book list available in the shop using promises and callbacks
 public_users.get('/',function (req, res) {
-  res.send(JSON.stringify(books,null,4))
+    let myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(JSON.stringify(books,null,4))
+        }, 2000)})
+
+    myPromise.then((booksList) => {
+        res.send(booksList)
+    })
 });
 
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+// Get book details based on ISBN using promises and callbacks
+public_users.get('/isbn/:isbn', function (req, res) {
     const isbn = req.params.isbn;
-    res.send(books[isbn])
+    let myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(books)
+        }, 2000)})
+
+    myPromise.then((booksList) => {
+        res.send(booksList[isbn])
+    })
  });
   
-// Get book details based on author
+// Get book details based on author using promises and callbacks
 public_users.get('/author/:author',function (req, res) {
     const req_author = req.params.author;
     let filtered_books = [];
@@ -39,12 +53,17 @@ public_users.get('/author/:author',function (req, res) {
             filtered_books.push(books[key]);
         }
     }
-    if (filtered_books.length > 0) {
-        res.send(filtered_books);
-    }
-    else {
-        res.send('No books with the author \''+req_author+'\' was found')
-    }
+    let myPromise = new Promise((resolve,reject)=>{
+        if (filtered_books.length > 0) {
+            resolve(JSON.stringify(filtered_books));
+        }
+        else {
+            resolve('No books with the author \''+req_author+'\' was found')
+        }  
+    })
+    myPromise.then((msg) => {
+        res.send(msg)
+    })
 });
 
 // Get all books based on title
@@ -56,12 +75,17 @@ public_users.get('/title/:title',function (req, res) {
             filtered_books.push(books[key]);
         }
     }
-    if (filtered_books.length > 0) {
-        res.send(filtered_books);
-    }
-    else {
-        res.send('No books with the title \''+req_title+'\' was found')
-    }
+    let myPromise = new Promise((resolve,reject)=>{
+        if (filtered_books.length > 0) {
+            resolve(JSON.stringify(filtered_books));
+        }
+        else {
+            resolve('No books with the title \''+req_title+'\' was found')
+        }  
+    })
+    myPromise.then((msg) => {
+        res.send(msg)
+    })
 });
 
 //  Get book review
